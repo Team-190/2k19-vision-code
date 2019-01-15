@@ -1,0 +1,99 @@
+<grip:Pipeline>
+  <sources>
+    <grip:ImageFile>
+      <property name="path" value="C:\Users\gcper\Code\VisionDeepSpace\2019VisionImages\CargoAngledDark48in.jpg"/>
+    </grip:ImageFile>
+    <grip:ImageFile>
+      <property name="path" value="C:\Users\gcper\Code\VisionDeepSpace\2019VisionImages\CargoStraightDark24in.jpg"/>
+    </grip:ImageFile>
+  </sources>
+  <steps>
+    <grip:Step name="CV erode">
+      <grip:Input step="0" socket="0"/>
+      <grip:Input step="0" socket="1"/>
+      <grip:Input step="0" socket="2"/>
+      <grip:Input step="0" socket="3">
+        <value>1</value>
+      </grip:Input>
+      <grip:Input step="0" socket="4">
+        <value>BORDER_CONSTANT</value>
+      </grip:Input>
+      <grip:Input step="0" socket="5"/>
+      <grip:Output step="0" socket="0" previewed="true"/>
+    </grip:Step>
+    <grip:Step name="HSL Threshold">
+      <grip:Input step="1" socket="0"/>
+      <grip:Input step="1" socket="1">
+        <value>
+          <double>48.561151079136685</double>
+          <double>120.1023890784983</double>
+        </value>
+      </grip:Input>
+      <grip:Input step="1" socket="2">
+        <value>
+          <double>151.34892086330936</double>
+          <double>255.0</double>
+        </value>
+      </grip:Input>
+      <grip:Input step="1" socket="3">
+        <value>
+          <double>68.00480312149176</double>
+          <double>144.30225321602364</double>
+        </value>
+      </grip:Input>
+      <grip:Output step="1" socket="0" previewed="true"/>
+    </grip:Step>
+    <grip:Step name="Find Lines">
+      <grip:Input step="2" socket="0"/>
+      <grip:Output step="2" socket="0" previewed="true"/>
+    </grip:Step>
+    <grip:Step name="Filter Lines">
+      <grip:Input step="3" socket="0"/>
+      <grip:Input step="3" socket="1">
+        <value>20.0</value>
+      </grip:Input>
+      <grip:Input step="3" socket="2">
+        <value>
+          <int>0</int>
+          <int>360</int>
+        </value>
+      </grip:Input>
+      <grip:Output step="3" socket="0" previewed="true"/>
+    </grip:Step>
+  </steps>
+  <connections>
+    <grip:Connection>
+      <grip:Output step="2" socket="0" previewed="true"/>
+      <grip:Input step="3" socket="0"/>
+    </grip:Connection>
+    <grip:Connection>
+      <grip:Output source="0" socket="0" previewed="false"/>
+      <grip:Input step="0" socket="0"/>
+    </grip:Connection>
+    <grip:Connection>
+      <grip:Output step="0" socket="0" previewed="true"/>
+      <grip:Input step="1" socket="0"/>
+    </grip:Connection>
+    <grip:Connection>
+      <grip:Output step="1" socket="0" previewed="true"/>
+      <grip:Input step="2" socket="0"/>
+    </grip:Connection>
+  </connections>
+  <settings>
+    <teamNumber>0</teamNumber>
+    <publishAddress>roboRIO-0-FRC.local</publishAddress>
+    <deployAddress>roboRIO-0-FRC.local</deployAddress>
+    <deployDir>/home/lvuser</deployDir>
+    <deployUser>lvuser</deployUser>
+    <deployJavaHome>/usr/local/frc/JRE/</deployJavaHome>
+    <deployJvmOptions>-Xmx50m -XX:-OmitStackTraceInFastThrow -XX:+HeapDumpOnOutOfMemoryError -XX:MaxNewSize=16m</deployJvmOptions>
+  </settings>
+  <codeGenerationSettings>
+    <language>Java</language>
+    <className>GripPipeline</className>
+    <implementWpilibPipeline>false</implementWpilibPipeline>
+    <saveDir>C:\Users\gcper\GRIP</saveDir>
+    <packageName></packageName>
+    <moduleName>grip</moduleName>
+  </codeGenerationSettings>
+</grip:Pipeline>
