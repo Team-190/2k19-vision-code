@@ -84,9 +84,10 @@ def graph(lines):
     lc = mc.LineCollection(lines)
     fig, ax = plt.subplots()
     ax.add_collection(lc)
-    ax.set_xlim(320)
-    ax.set_ylim(240)
+    ax.set_xlim([0, 320])
+    ax.set_ylim([0, 240])
     ax.invert_xaxis()
+    ax.invert_yaxis()
     plt.show()
 
 
