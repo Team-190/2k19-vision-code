@@ -33,7 +33,7 @@ class GripPipeline:
 
         self.__filter_lines_lines = self.find_lines_output
         self.__filter_lines_min_length = 20.0
-        self.__filter_lines_angle = [67.98561151079136, 129.6245733788396]
+        self.__filter_lines_angle = [0, 360]
 
         self.filter_lines_output = None
 
@@ -91,17 +91,10 @@ class GripPipeline:
     class Line:
 
         def __init__(self, x1, y1, x2, y2):
-            if x1 < x2:
-                self.x1 = x1
-                self.y1 = y1
-                self.x2 = x2
-                self.y2 = y2
-            else:
-                self.x1 = x2
-                self.y1 = y2
-                self.x2 = x1
-                self.y2 = y1
-
+            self.x1 = x1
+            self.y1 = y1
+            self.x2 = x2
+            self.y2 = y2
 
         def length(self):
             return numpy.sqrt(pow(self.x2 - self.x1, 2) + pow(self.y2 - self.y1, 2))
@@ -124,7 +117,7 @@ class GripPipeline:
             lines = detector.detect(tmp)
         output = []
         if len(lines) != 0:
-            for i in range(0, len(lines[0])):
+            for i in range(1, len(lines[0])):
                 tmp = GripPipeline.Line(lines[0][i, 0][0], lines[0][i, 0][1],
                                 lines[0][i, 0][2], lines[0][i, 0][3])
                 output.append(tmp)
