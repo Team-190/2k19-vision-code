@@ -87,8 +87,6 @@ def graph(lines, name):
     ax.add_collection(lc)
     ax.set_xlim([0, 320])
     ax.set_ylim([0, 240])
-    ax.get_yaxis().set_visible(False)
-    ax.get_xaxis().set_visible(False)
     ax.invert_yaxis()
     #ax.axis('off')
     plt.show()
@@ -115,8 +113,7 @@ def main():
     plt.imshow(plt.imread(name))
     plt.xlim([0, 320])
     plt.ylim([0, 240])
-    plt.axes.get_xaxis().set_visible(False)
-    plt.axes.get_yaxis().set_visible(False)
+
     plt.gca().invert_yaxis()
     for port in ports:
         plt.plot(port, 120, 'bo', markersize=20)
