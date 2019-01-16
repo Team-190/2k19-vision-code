@@ -81,20 +81,22 @@ def graph(lines, name):
     :return: None
     """
     lines = [[[line.x1, line.y1], [line.x2, line.y2]] for line in lines]
-    lc = mc.LineCollection(lines, linewidths=[7]*len(lines), colors=['b']*len(lines))
+    lc = mc.LineCollection(lines, linewidths=[7] * len(lines), colors=['b'] * len(lines))
     fig, ax = plt.subplots()
     ax.imshow(plt.imread(name))
     ax.add_collection(lc)
     ax.set_xlim([0, 320])
     ax.set_ylim([0, 240])
     ax.invert_yaxis()
-    #ax.axis('off')
+    # ax.axis('off')
     plt.show()
 
 
 def main():
-    name = "2019VisionImages/CargoSideStraightDark36in.jpg"
+    # name = "2019VisionImages/CargoSideStraightDark36in.jpg"
     # name = "2019VisionImages/CargoAngledDark48in.jpg"
+    # name = "2019VisionImages/RocketPanelAngleDark60in.jpg"
+    name = "2019VisionImages/CargoSideStraightDark72in.jpg"
 
     # load and process image
     img = cv2.imread(name)
@@ -102,7 +104,7 @@ def main():
     pipeline = GripPipeline()
     pipeline.process(img)
     lines = pipeline.filter_lines_output
-    lines.sort(key=mid_x) # sort lines left to right
+    lines.sort(key=mid_x)  # sort lines left to right
 
     # graph intermediate steps
     graph(lines, name)

@@ -1,7 +1,6 @@
 import cv2
 import numpy
 import math
-from enum import Enum
 
 
 class GripPipeline:
@@ -33,7 +32,7 @@ class GripPipeline:
         self.find_lines_output = None
 
         self.__filter_lines_lines = self.find_lines_output
-        self.__filter_lines_min_length = 20.0
+        self.__filter_lines_min_length = 0.0
         self.__filter_lines_angle = [67.98561151079136, 129.6245733788396]
 
         self.filter_lines_output = None
@@ -128,7 +127,7 @@ class GripPipeline:
             A filtered list of Lines.
         """
         detector = cv2.createLineSegmentDetector()
-        if (len(input.shape) == 2 or input.shape[2] == 1):
+        if len(input.shape) == 2 or input.shape[2] == 1:
             lines = detector.detect(input)
         else:
             tmp = cv2.cvtColor(input, cv2.COLOR_BGR2GRAY)
@@ -146,15 +145,13 @@ class GripPipeline:
         """Filters out lines that do not meet certain criteria.
         Args:
             inputs: A list of Lines.
-            min_Lenght: The minimum lenght that will be kept.
+            min_Length: The minimum lenght that will be kept.
             angle: The minimum and maximum angles in degrees as a list of two numbers.
         Returns:
             A filtered list of Lines.
         """
         outputs = []
         for line in inputs:
-            if (line.length() > min_length):
-                if ((line.angle() >= angle[0] and line.angle() <= angle[1]) or
-                        (line.angle() + 180.0 >= angle[0] and line.angle() + 180.0 <= angle[1])):
-                    outputs.append(line)
+            if (angle[0] <= line.angle() <= angle[1]) or (angle[0] <= line.angle() + 180.0 <= angle[1]):
+                outputs.append(line)
         return outputs
