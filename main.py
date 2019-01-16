@@ -74,19 +74,23 @@ def find_ports(lines):
     return ports
 
 
-def graph(lines):
+def graph(lines, name):
     """
     Graphs all detected lines
     :param lines: list of GripPipeline.Line objects
     :return: None
     """
     lines = [[[line.x1, line.y1], [line.x2, line.y2]] for line in lines]
-    lc = mc.LineCollection(lines)
+    lc = mc.LineCollection(lines, linewidths=[7]*len(lines), colors=['b']*len(lines))
     fig, ax = plt.subplots()
+    ax.imshow(plt.imread(name))
     ax.add_collection(lc)
     ax.set_xlim([0, 320])
     ax.set_ylim([0, 240])
+    ax.get_yaxis().set_visible(False)
+    ax.get_xaxis().set_visible(False)
     ax.invert_yaxis()
+    #ax.axis('off')
     plt.show()
 
 
@@ -103,16 +107,19 @@ def main():
     lines.sort(key=mid_x) # sort lines left to right
 
     # graph intermediate steps
-    graph(lines)
-    graph(merge_lines(lines))
+    graph(lines, name)
+    graph(merge_lines(lines), name)
     ports = find_ports(merge_lines(lines))
 
     # plot port points
+    plt.imshow(plt.imread(name))
     plt.xlim([0, 320])
     plt.ylim([0, 240])
+    plt.axes.get_xaxis().set_visible(False)
+    plt.axes.get_yaxis().set_visible(False)
     plt.gca().invert_yaxis()
     for port in ports:
-        plt.plot(port, 120, 'bo')
+        plt.plot(port, 120, 'bo', markersize=20)
     plt.show()
 
 
