@@ -86,7 +86,6 @@ def graph(lines):
     ax.add_collection(lc)
     ax.set_xlim([0, 320])
     ax.set_ylim([0, 240])
-    ax.invert_xaxis()
     ax.invert_yaxis()
     plt.show()
 
