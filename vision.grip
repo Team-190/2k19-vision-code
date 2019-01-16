@@ -54,10 +54,10 @@
       <property name="path[37]" value="C:\Users\gcper\Code\VisionDeepSpace\2019VisionImages\RocketPanelAngleDark84in.jpg"/>
     </grip:MultiImageFile>
     <grip:ImageFile>
-      <property name="path" value="C:\Users\gcper\Robotics\2019VisionImages\CargoSideStraightDark36in.jpg"/>
+      <property name="path" value="C:\Users\gcper\Robotics\2019VisionImages\CargoStraightDark24in.jpg"/>
     </grip:ImageFile>
     <grip:ImageFile>
-      <property name="path" value="C:\Users\gcper\Robotics\2019VisionImages\CargoStraightDark24in.jpg"/>
+      <property name="path" value="C:\Users\gcper\Robotics\2019VisionImages\CargoAngledDark48in.jpg"/>
     </grip:ImageFile>
   </sources>
   <steps>
@@ -66,13 +66,13 @@
       <grip:Input step="0" socket="1"/>
       <grip:Input step="0" socket="2"/>
       <grip:Input step="0" socket="3">
-        <value>1</value>
+        <value>1.0</value>
       </grip:Input>
       <grip:Input step="0" socket="4">
         <value>BORDER_CONSTANT</value>
       </grip:Input>
       <grip:Input step="0" socket="5"/>
-      <grip:Output step="0" socket="0" previewed="false"/>
+      <grip:Output step="0" socket="0" previewed="true"/>
     </grip:Step>
     <grip:Step name="HSL Threshold">
       <grip:Input step="1" socket="0"/>
@@ -94,11 +94,11 @@
           <double>144.30225321602364</double>
         </value>
       </grip:Input>
-      <grip:Output step="1" socket="0" previewed="true"/>
+      <grip:Output step="1" socket="0" previewed="false"/>
     </grip:Step>
     <grip:Step name="Find Lines">
       <grip:Input step="2" socket="0"/>
-      <grip:Output step="2" socket="0" previewed="true"/>
+      <grip:Output step="2" socket="0" previewed="false"/>
     </grip:Step>
     <grip:Step name="Filter Lines">
       <grip:Input step="3" socket="0"/>
@@ -107,8 +107,8 @@
       </grip:Input>
       <grip:Input step="3" socket="2">
         <value>
-          <int>0</int>
-          <int>360</int>
+          <double>67.98561151079136</double>
+          <double>129.6245733788396</double>
         </value>
       </grip:Input>
       <grip:Output step="3" socket="0" previewed="true"/>
@@ -116,20 +116,20 @@
   </steps>
   <connections>
     <grip:Connection>
-      <grip:Output step="2" socket="0" previewed="true"/>
+      <grip:Output step="2" socket="0" previewed="false"/>
       <grip:Input step="3" socket="0"/>
-    </grip:Connection>
-    <grip:Connection>
-      <grip:Output step="1" socket="0" previewed="true"/>
-      <grip:Input step="2" socket="0"/>
-    </grip:Connection>
-    <grip:Connection>
-      <grip:Output step="0" socket="0" previewed="false"/>
-      <grip:Input step="1" socket="0"/>
     </grip:Connection>
     <grip:Connection>
       <grip:Output source="2" socket="0" previewed="false"/>
       <grip:Input step="0" socket="0"/>
+    </grip:Connection>
+    <grip:Connection>
+      <grip:Output step="1" socket="0" previewed="false"/>
+      <grip:Input step="2" socket="0"/>
+    </grip:Connection>
+    <grip:Connection>
+      <grip:Output step="0" socket="0" previewed="true"/>
+      <grip:Input step="1" socket="0"/>
     </grip:Connection>
   </connections>
   <settings>

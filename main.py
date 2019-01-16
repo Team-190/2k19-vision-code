@@ -66,6 +66,7 @@ def find_ports(lines):
                 pass
             else:
                 ports.append((left+mid_x(line)) // 2)
+                left = None
     return ports
 
 
