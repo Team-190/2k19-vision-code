@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 from matplotlib import collections as mc
 import cv2
 
+
 def mid_x(line):
     """
     Gets a GripPipeline.Line's midpoint's x coordinate
@@ -11,6 +12,7 @@ def mid_x(line):
     """
     return (line.x1 + line.x2) // 2
 
+
 def is_left(line):
     """
     Finds if line is left line of pair
@@ -18,6 +20,7 @@ def is_left(line):
     :return: whether line is left line of pair
     """
     return line.angle() < 0
+
 
 def merge_lines(lines):
     """
@@ -29,7 +32,7 @@ def merge_lines(lines):
     pairs = []
     for line in lines:
         if len(pairs) and is_left(pairs[-1][-1]) == is_left(line):
-                pairs[-1].append(line)
+            pairs[-1].append(line)
         else:
             pairs.append([line])
 
@@ -44,6 +47,7 @@ def merge_lines(lines):
             y2 = sum([line.y2 for line in pair]) // len(pair)
             lines.append(GripPipeline.Line(x1, y1, x2, y2))
     return lines
+
 
 def find_ports(lines):
     """
@@ -65,7 +69,7 @@ def find_ports(lines):
                 # unpaired left? should never happen
                 pass
             else:
-                ports.append((left+mid_x(line)) // 2)
+                ports.append((left + mid_x(line)) // 2)
                 left = None
     return ports
 
@@ -88,21 +92,28 @@ def graph(lines):
 
 def main():
     name = "2019VisionImages/CargoSideStraightDark36in.jpg"
-    name = "2019VisionImages/CargoAngledDark48in.jpg"
+    # name = "2019VisionImages/CargoAngledDark48in.jpg"
+
+    # load and process image
     img = cv2.imread(name)
     print(name)
     pipeline = GripPipeline()
     pipeline.process(img)
     lines = pipeline.filter_lines_output
-    lines.sort(key=mid_x)
+    lines.sort(key=mid_x) # sort lines left to right
+
+    # graph intermediate steps
     graph(lines)
     graph(merge_lines(lines))
     ports = find_ports(merge_lines(lines))
+
+    # plot port points
+    plt.xlim([0, 320])
+    plt.ylim([0, 240])
+    plt.gca().invert_yaxis()
     for port in ports:
         plt.plot(port, 120, 'bo')
     plt.show()
-
-
 
 
 if __name__ == "__main__":
