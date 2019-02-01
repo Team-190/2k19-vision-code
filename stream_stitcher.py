@@ -4,24 +4,26 @@ import threading
 from queue import Queue
 import math
 
-queue = Queue()
-
+frame_left, frame_right = None, None
 
 def frame_putter(source, queue):
-    s = source
-    c = 0
+    side = source
     source = cv2.VideoCapture(source)
     source.set(3, 320)
     source.set(4, 240)
     # source.set(12, 16)
     source.set(cv2.CAP_PROP_AUTOFOCUS, 0)
     ret, frame = source.read()
-    while ret:
-        queue.put([c + s / 2, frame])
-        c += 1
-        ret, frame = source.read()
+    while True:
+        if ret:
+            ret, frame = source.read()
+            if side == 0:
+                pass
+        else:
+            pass
         time.sleep(.1)
 
+# TODO: write to left and write frame objects with each frame, merge them
 
 t1 = threading.Thread(target=frame_putter, args=(1, queue))
 t2 = threading.Thread(target=frame_putter, args=(2, queue))
