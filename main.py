@@ -4,13 +4,13 @@ from matplotlib import collections as mc
 import cv2
 
 
-def mid_x(line):
+def mid(line):
     """
     Gets a GripPipeline.Line's midpoint's x coordinate
     :param line: GripPipeLine.Line line
     :return: midpoint x coordinate
     """
-    return (line.x1 + line.x2) // 2
+    return [(line.x1 + line.x2) // 2, (line.y1 + line.y2) // 2]
 
 
 def is_left(line):
@@ -60,7 +60,7 @@ def find_ports(lines):
     for line in lines:
         if left is None:
             if is_left(line):
-                left = mid_x(line)
+                left = mid(line)
             else:
                 # unpaired right
                 pass
@@ -69,8 +69,9 @@ def find_ports(lines):
                 # unpaired left? should never happen
                 pass
             else:
-                ports.append((left + mid_x(line)) // 2)
+                ports.append([int(left[0] + mid(line)[0]) // 2, int(left[1] + mid(line)[1]) // 2])
                 left = None
+    print(ports)
     return ports
 
 
@@ -90,7 +91,7 @@ def graph(lines, name):
     ax.invert_yaxis()
     # ax.axis('off')
     plt.show()
-
++
 
 def main():
     # name = "2019VisionImages/CargoSideStraightDark36in.jpg"
@@ -104,7 +105,7 @@ def main():
     pipeline = GripPipeline()
     pipeline.process(img)
     lines = pipeline.filter_lines_output
-    lines.sort(key=mid_x)  # sort lines left to right
+    lines.sort(key=lambda i:mid(i)[0])  # sort lines left to right
 
     # graph intermediate steps
     graph(lines, name)
@@ -117,8 +118,8 @@ def main():
     plt.ylim([0, 240])
 
     plt.gca().invert_yaxis()
-    for port in ports:
-        plt.plot(port, 120, 'bo', markersize=20)
+    x, y = zip(*ports)
+    plt.scatter(x=x, y=y, c='r', s=81)
     plt.show()
 
 
