@@ -1,18 +1,19 @@
 #!/usr/bin/env python3
-#----------------------------------------------------------------------------
+# ----------------------------------------------------------------------------
 # Copyright (c) 2018 FIRST. All Rights Reserved.
 # Open Source Software - may be modified and shared by FRC teams. The code
 # must be accompanied by the FIRST BSD license file in the root directory of
 # the project.
-#----------------------------------------------------------------------------
+# ----------------------------------------------------------------------------
 
 import json
 import time
 import sys
-import numpy as np
 
-from cscore import CameraServer, VideoSource, UsbCamera, MjpegServer, CvSource, VideoMode
+from cscore import CameraServer, VideoSource, UsbCamera, MjpegServer, CvSink
 from networktables import NetworkTablesInstance
+import numpy as np
+from main import Processor
 
 #   JSON format:
 #   {
@@ -49,17 +50,24 @@ from networktables import NetworkTablesInstance
 
 configFile = "/boot/frc.json"
 
+
 class CameraConfig: pass
+
 
 team = None
 server = False
 cameraConfigs = []
 
 """Report parse error."""
+
+
 def parseError(str):
     print("config error in '" + configFile + "': " + str, file=sys.stderr)
 
+
 """Read single camera configuration."""
+
+
 def readCameraConfig(config):
     cam = CameraConfig()
 
@@ -85,7 +93,10 @@ def readCameraConfig(config):
     cameraConfigs.append(cam)
     return True
 
+
 """Read configuration file."""
+
+
 def readConfig():
     global team
     global server
@@ -132,27 +143,26 @@ def readConfig():
 
     return True
 
+
 """Start running the camera."""
-def startCamera(config, port):
+
+
+def startCamera(config):
     print("Starting camera '{}' on {}".format(config.name, config.path))
     inst = CameraServer.getInstance()
     camera = UsbCamera(config.name, config.path)
-    # server = inst.startAutomaticCapture(camera=camera, return_server=True)
-    inst.addCamera(camera)
-    server = inst.addServer(name="serve_" + camera.getName(), port=port)
-    server.setSource(camera)
-
+    server = inst.startAutomaticCapture(camera=camera, return_server=True)
 
     camera.setConfigJson(json.dumps(config.config))
     camera.setConnectionStrategy(VideoSource.ConnectionStrategy.kKeepOpen)
 
     if config.streamConfig is not None:
         server.setConfigJson(json.dumps(config.streamConfig))
-        print(json.dumps(config.streamConfig))
+
     return camera
 
+
 if __name__ == "__main__":
-    port = 1184
     if len(sys.argv) >= 2:
         configFile = sys.argv[1]
 
@@ -172,36 +182,19 @@ if __name__ == "__main__":
     # start cameras
     cameras = []
     for cameraConfig in cameraConfigs:
-        cameras.append(startCamera(cameraConfig, port))
-        port += 1
+        cameras.append(startCamera(cameraConfig))
 
+    cvSink = CameraServer.getInstance().getVideo(camera=cameras[1])
 
-    cvSinks = []
-    for camera in cameras:
-        cvSinks.append(CameraServer.getInstance().getVideo(camera=camera))
+    port_entry = ntinst.getTable("Sensors").getEntry("ports")
+    nb_port_entry = ntinst.getTable("Sensors").getEntry("nb_ports")
 
-    table = ntinst.getEntry("/CameraPublisher/PiCamera/streams")
+    processor = Processor()
 
-
-    source = CvSource("Drivecam", VideoMode.PixelFormat.kMJPEG, 120, 200, 3)
-    server = CameraServer.getInstance().addServer(name="serve_2", port=1186)
-    server.setSource(source)
     # loop forever
     while True:
-        time.sleep(.05)
-
-        _, frame_0 = cvSinks[0].grabFrame(np.zeros((120, 160, 3), dtype=np.int))
-        _, frame_1 = cvSinks[1].grabFrame(np.zeros((120, 160, 3), dtype=np.int))
-
-        frame_1 = frame_1[:, :100, :]
-        frame_0 = frame_0[:, 60:, :]
-        # print(fr)
-
-        # print(frame_0.shape)
-        frame = np.concatenate((frame_1, frame_0), axis=1)
-        # print(frame.shape)
-        source.putFrame(frame)
-        table.setStringArray(["mjpeg:http://10.1.90.40:1186/?action=stream"])
-        # 10.1.90.40
-
-
+        time.sleep(.034)
+        _, img = cvSink.grabFrame(np.zeros((240, 360, 3), dtype=np.int))
+        ports = processor.process(img)
+        port_entry.setDoubleArray(ports)
+        nb_port_entry.setNumber(len(ports))
