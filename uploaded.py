@@ -188,6 +188,10 @@ if __name__ == "__main__":
 
     port_entry = ntinst.getTable("Sensors").getEntry("ports")
     nb_port_entry = ntinst.getTable("Sensors").getEntry("nb_ports")
+    nb_line_entry = ntinst.getTable("Sensors").getEntry("nb_lines")
+    dist_entry = ntinst.getTable("Sensors").getEntry("distances")
+    nb_dist_entry = ntinst.getTable("Sensors").getEntry("nb_distances")
+
 
     processor = Processor()
 
@@ -198,3 +202,8 @@ if __name__ == "__main__":
         ports = processor.process(img)
         port_entry.setDoubleArray(ports)
         nb_port_entry.setNumber(len(ports))
+        nb_line_entry.setNumber(len(processor.lines))
+        dist_entry.setDoubleArray(processor.dists)
+        nb_dist_entry.setNumber(len(processor.dists))
+        if len(ports) > 0:
+            print(len(ports))

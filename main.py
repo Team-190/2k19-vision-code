@@ -1,7 +1,8 @@
 from grip import GripPipeline
-import matplotlib.pyplot as plt
-from matplotlib import collections as mc
+# import matplotlib.pyplot as plt
+# from matplotlib import collections as mc
 import cv2
+
 
 class Processor:
 
@@ -16,7 +17,6 @@ class Processor:
         """
         return [(line.x1 + line.x2) // 2, (line.y1 + line.y2) // 2]
 
-
     def is_left(self, line):
         """
         Finds if line is left line of pair
@@ -24,7 +24,6 @@ class Processor:
         :return: whether line is left line of pair
         """
         return line.angle() < 0
-
 
     def merge_lines(self, lines):
         """
@@ -52,7 +51,6 @@ class Processor:
                 lines.append(GripPipeline.Line(x1, y1, x2, y2))
         return lines
 
-
     def find_ports(self, lines):
         """
         Finds point location of all visible cargo ports
@@ -61,6 +59,7 @@ class Processor:
         """
         ports = []
         left = None
+        self.dists = []
         for line in lines:
             if left is None:
                 if self.is_left(line):
@@ -74,28 +73,27 @@ class Processor:
                     pass
                 else:
                     ports.append(int(left[0] + self.mid(line)[0]) // 2)
+                    self.dists.append(left[0]-self.mid(line)[0])
                     left = None
-        print(ports)
+        # print(ports)
         return ports
 
-
-    def graph(lines, name):
-        """
-        Graphs all detected lines
-        :param lines: list of GripPipeline.Line objects
-        :return: None
-        """
-        lines = [[[line.x1, line.y1], [line.x2, line.y2]] for line in lines]
-        lc = mc.LineCollection(lines, linewidths=[7] * len(lines), colors=['b'] * len(lines))
-        fig, ax = plt.subplots()
-        ax.imshow(plt.imread(name))
-        ax.add_collection(lc)
-        ax.set_xlim([0, 320])
-        ax.set_ylim([0, 240])
-        ax.invert_yaxis()
-        # ax.axis('off')
-        plt.show()
-
+    # def graph(lines, name):
+    #     """
+    #     Graphs all detected lines
+    #     :param lines: list of GripPipeline.Line objects
+    #     :return: None
+    #     """
+    #     lines = [[[line.x1, line.y1], [line.x2, line.y2]] for line in lines]
+    #     lc = mc.LineCollection(lines, linewidths=[7] * len(lines), colors=['b'] * len(lines))
+    #     fig, ax = plt.subplots()
+    #     ax.imshow(plt.imread(name))
+    #     ax.add_collection(lc)
+    #     ax.set_xlim([0, 320])
+    #     ax.set_ylim([0, 240])
+    #     ax.invert_yaxis()
+    #     # ax.axis('off')
+    #     plt.show()
 
     def process(self, img):
         # name = "2019VisionImages/CargoSideStraightDark36in.jpg"
@@ -108,7 +106,9 @@ class Processor:
         # print(name)]
         self.pipeline.process(img)
         lines = self.pipeline.filter_lines_output
-        lines.sort(key=lambda i:self.mid(i)[0])  # sort lines left to right
+        self.lines = lines
+        print(len(lines))
+        lines.sort(key=lambda i: self.mid(i)[0])  # sort lines left to right
 
         # graph intermediate steps
         # graph(lines, name)
@@ -124,7 +124,7 @@ class Processor:
         # x, y = zip(*ports)
         # plt.scatter(x=x, y=y, c='r', s=81)
         # plt.show()
-        return ports
+        return ports if ports else []
 
 
 if __name__ == "__main__":

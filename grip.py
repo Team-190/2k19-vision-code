@@ -21,9 +21,9 @@ class GripPipeline:
         self.cv_erode_output = None
 
         self.__hsl_threshold_input = self.cv_erode_output
-        self.__hsl_threshold_hue = [48.561151079136685, 120.1023890784983]
-        self.__hsl_threshold_saturation = [151.34892086330936, 255.0]
-        self.__hsl_threshold_luminance = [68.00480312149176, 144.30225321602364]
+        self.__hsl_threshold_hue = [29, 94]
+        self.__hsl_threshold_saturation = [151, 255]
+        self.__hsl_threshold_luminance = [9, 94]
 
         self.hsl_threshold_output = None
 
@@ -133,8 +133,8 @@ class GripPipeline:
             tmp = cv2.cvtColor(input, cv2.COLOR_BGR2GRAY)
             lines = detector.detect(tmp)
         output = []
-        if len(lines) != 0:
-            for i in range(0, len(lines[0])):
+        if len(lines) != 0 and lines[0] is not None:
+            for i in range(len(lines[0])):
                 tmp = GripPipeline.Line(lines[0][i, 0][0], lines[0][i, 0][1],
                                         lines[0][i, 0][2], lines[0][i, 0][3])
                 output.append(tmp)
