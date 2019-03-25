@@ -64,66 +64,24 @@ class Processor:
             if left is None:
                 if self.is_left(line):
                     left = self.mid(line)
-                else:
-                    # unpaired right
-                    pass
             else:
-                if self.is_left(line):
-                    # unpaired left? should never happen
-                    pass
-                else:
+                if not self.is_left(line):
                     ports.append(int(left[0] + self.mid(line)[0]) // 2)
-                    self.dists.append(left[0]-self.mid(line)[0])
+                    self.dists.append(left[0] - self.mid(line)[0])
                     left = None
         # print(ports)
         return ports
 
-    # def graph(lines, name):
-    #     """
-    #     Graphs all detected lines
-    #     :param lines: list of GripPipeline.Line objects
-    #     :return: None
-    #     """
-    #     lines = [[[line.x1, line.y1], [line.x2, line.y2]] for line in lines]
-    #     lc = mc.LineCollection(lines, linewidths=[7] * len(lines), colors=['b'] * len(lines))
-    #     fig, ax = plt.subplots()
-    #     ax.imshow(plt.imread(name))
-    #     ax.add_collection(lc)
-    #     ax.set_xlim([0, 320])
-    #     ax.set_ylim([0, 240])
-    #     ax.invert_yaxis()
-    #     # ax.axis('off')
-    #     plt.show()
-
     def process(self, img):
-        # name = "2019VisionImages/CargoSideStraightDark36in.jpg"
-        # name = "2019VisionImages/CargoAngledDark48in.jpg"
-        # name = "2019VisionImages/RocketPanelAngleDark60in.jpg"
-        # name = "2019VisionImages/CargoSideStraightDark72in.jpg"
 
-        # load and process image
-        # img = cv2.imread(name)
-        # print(name)]
         self.pipeline.process(img)
         lines = self.pipeline.filter_lines_output
         self.lines = lines
-        print(len(lines))
+        # print(len(lines))
         lines.sort(key=lambda i: self.mid(i)[0])  # sort lines left to right
 
-        # graph intermediate steps
-        # graph(lines, name)
-        # graph(merge_lines(lines), name)
         ports = self.find_ports(self.merge_lines(lines))
 
-        # plot port points
-        # plt.imshow(plt.imread(name))
-        # plt.xlim([0, 320])
-        # plt.ylim([0, 240])
-        #
-        # plt.gca().invert_yaxis()
-        # x, y = zip(*ports)
-        # plt.scatter(x=x, y=y, c='r', s=81)
-        # plt.show()
         return ports if ports else []
 
 

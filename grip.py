@@ -21,9 +21,9 @@ class GripPipeline:
         self.cv_erode_output = None
 
         self.__hsl_threshold_input = self.cv_erode_output
-        self.__hsl_threshold_hue = [29, 94]
-        self.__hsl_threshold_saturation = [151, 255]
-        self.__hsl_threshold_luminance = [20, 94]
+        self.__hsl_threshold_hue = [52, 94]
+        self.__hsl_threshold_saturation = [206, 255]
+        self.__hsl_threshold_luminance = [20, 77]
 
         self.hsl_threshold_output = None
 

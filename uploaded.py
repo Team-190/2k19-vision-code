@@ -184,7 +184,7 @@ if __name__ == "__main__":
     for cameraConfig in cameraConfigs:
         cameras.append(startCamera(cameraConfig))
 
-    cvSink = CameraServer.getInstance().getVideo(camera=cameras[1])
+    cvSink = CameraServer.getInstance().getVideo(camera=cameras[0])
 
     port_entry = ntinst.getTable("Sensors").getEntry("ports")
     nb_port_entry = ntinst.getTable("Sensors").getEntry("nb_ports")
@@ -205,5 +205,5 @@ if __name__ == "__main__":
         nb_line_entry.setNumber(len(processor.lines))
         dist_entry.setDoubleArray(processor.dists)
         nb_dist_entry.setNumber(len(processor.dists))
-        if len(ports) > 0:
-            print(len(ports))
+        # if len(ports) > 0:
+        #     print(len(ports))
